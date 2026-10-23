@@ -1,0 +1,16 @@
+[
+  {"id": "prod_spinach_1", "canonical_item": "spinach", "display_name": "Fresh Spinach", "pack_size": "1 bunch", "price_inr": 45, "in_stock": false, "substitute_item": "methi"},
+  {"id": "prod_methi_1", "canonical_item": "methi", "display_name": "Fresh Methi", "pack_size": "1 bunch", "price_inr": 35, "in_stock": true, "substitute_item": null},
+  {"id": "prod_paneer_1", "canonical_item": "paneer", "display_name": "Paneer", "pack_size": "200 g", "price_inr": 100, "in_stock": true, "substitute_item": "tofu"},
+  {"id": "prod_tofu_1", "canonical_item": "tofu", "display_name": "Tofu", "pack_size": "200 g", "price_inr": 90, "in_stock": true, "substitute_item": "paneer"},
+  {"id": "prod_chicken_1", "canonical_item": "chicken", "display_name": "Chicken Breast", "pack_size": "250 g", "price_inr": 180, "in_stock": true, "substitute_item": null},
+  {"id": "prod_curd_1", "canonical_item": "curd", "display_name": "Curd", "pack_size": "400 g", "price_inr": 50, "in_stock": true, "substitute_item": null},
+  {"id": "prod_eggs_1", "canonical_item": "eggs", "display_name": "Eggs", "pack_size": "6 count", "price_inr": 60, "in_stock": true, "substitute_item": null},
+  {"id": "prod_oats_1", "canonical_item": "oats", "display_name": "Oats", "pack_size": "500 g", "price_inr": 120, "in_stock": true, "substitute_item": null},
+  {"id": "prod_dosa_1", "canonical_item": "dosa batter", "display_name": "Dosa Batter", "pack_size": "500 g", "price_inr": 65, "in_stock": true, "substitute_item": null},
+  {"id": "prod_onions_1", "canonical_item": "onions", "display_name": "Onions", "pack_size": "500 g", "price_inr": 30, "in_stock": true, "substitute_item": null},
+  {"id": "prod_tomatoes_1", "canonical_item": "tomatoes", "display_name": "Tomatoes", "pack_size": "500 g", "price_inr": 40, "in_stock": true, "substitute_item": null},
+  {"id": "prod_rice_1", "canonical_item": "rice", "display_name": "Rice", "pack_size": "1000 g", "price_inr": 80, "in_stock": true, "substitute_item": null},
+  {"id": "prod_ragi_1", "canonical_item": "ragi", "display_name": "Ragi Flour", "pack_size": "500 g", "price_inr": 55, "in_stock": true, "substitute_item": null},
+  {"id": "prod_pasta_1", "canonical_item": "pasta", "display_name": "Whole Wheat Pasta", "pack_size": "250 g", "price_inr": 85, "in_stock": true, "substitute_item": null}
+]

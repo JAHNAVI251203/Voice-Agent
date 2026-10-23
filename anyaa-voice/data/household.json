@@ -1,0 +1,38 @@
+{
+  "household": {"id": "hh_001", "city": "Bengaluru", "preferred_store": "instamart"},
+  "members": [
+    {"id": "m1", "name": "Rohan", "resident": true, "diet": "non-vegetarian", "goals": ["high-protein"], "preferences": [], "hard_avoid": []},
+    {"id": "m2", "name": "Meera", "resident": true, "diet": "vegetarian", "goals": [], "preferences": ["lower-GI"], "hard_avoid": ["meat", "fish"]},
+    {"id": "m3", "name": "Appa", "resident": false, "role": "visiting family member", "conditions": ["type-2 diabetes"], "preferences": ["lower-GI", "lower-salt"], "hard_avoid": []},
+    {"id": "m4", "name": "Aarav", "resident": true, "role": "child", "dislikes": ["spicy food", "bitter gourd"], "hard_avoid": []}
+  ],
+  "cook": {"name": "Lakshmi", "languages": ["Kannada", "Hindi"], "comfortable_cuisines": ["South Indian", "North Indian"], "unfamiliar_ingredients": ["tofu"]},
+  "pantry": [
+    {"item": "dosa batter", "qty": 1000, "unit": "g", "status": "available"},
+    {"item": "paneer", "qty": 200, "unit": "g", "status": "low"},
+    {"item": "eggs", "qty": 4, "unit": "count", "status": "available"},
+    {"item": "rice", "qty": 1500, "unit": "g", "status": "available"},
+    {"item": "toor dal", "qty": 500, "unit": "g", "status": "available"},
+    {"item": "onions", "qty": 300, "unit": "g", "status": "low"},
+    {"item": "tomatoes", "qty": 0, "unit": "g", "status": "out"},
+    {"item": "oats", "qty": 400, "unit": "g", "status": "available"},
+    {"item": "spinach", "qty": 0, "unit": "bunch", "status": "out"}
+  ],
+  "meal_plan": [
+    {
+      "id": "ml_1", "date": "2026-10-24", "slot": "dinner", "dish": "Palak paneer with dosa",
+      "attendees": ["m1", "m2", "m3", "m4"],
+      "ingredients": [
+        {"item": "spinach", "qty": 2, "unit": "bunch"},
+        {"item": "paneer", "qty": 400, "unit": "g"},
+        {"item": "dosa batter", "qty": 800, "unit": "g"}
+      ],
+      "variants": {"m1": [{"item": "chicken", "qty": 150, "unit": "g"}]},
+      "notes": "Shared vegetarian base; chicken only for Rohan. Appa prefers lower salt; keep the shared food mild for Aarav.",
+      "status": "draft"
+    }
+  ],
+  "grocery_list": [],
+  "pending_confirmation": null,
+  "history": []
+}

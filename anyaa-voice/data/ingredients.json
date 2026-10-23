@@ -1,0 +1,19 @@
+[
+  {"canonical": "spinach", "aliases": ["palak", "ಪಾಲಕ್", "soppu"], "tags": [], "unit": "bunch"},
+  {"canonical": "methi", "aliases": ["fenugreek leaves", "ಮೆಂತ್ಯ"], "tags": [], "unit": "bunch"},
+  {"canonical": "paneer", "aliases": ["ಪನೀರ್"], "tags": ["dairy"], "unit": "g"},
+  {"canonical": "tofu", "aliases": ["ಟೋಫು"], "tags": [], "unit": "g"},
+  {"canonical": "chicken", "aliases": ["ಕೋಳಿ"], "tags": ["meat"], "unit": "g"},
+  {"canonical": "fish", "aliases": ["ಮೀನು"], "tags": ["fish"], "unit": "g"},
+  {"canonical": "eggs", "aliases": ["egg", "anda", "ಮೊಟ್ಟೆ"], "tags": ["egg"], "unit": "count"},
+  {"canonical": "curd", "aliases": ["yogurt", "dahi", "ಮೊಸರು"], "tags": ["dairy"], "unit": "g"},
+  {"canonical": "dosa batter", "aliases": ["dose batter", "ದೋಸೆ ಹಿಟ್ಟು"], "tags": [], "unit": "g"},
+  {"canonical": "rice", "aliases": ["ಅಕ್ಕಿ"], "tags": [], "unit": "g"},
+  {"canonical": "toor dal", "aliases": ["arhar dal", "ತೊಗರಿ ಬೇಳೆ"], "tags": [], "unit": "g"},
+  {"canonical": "ragi", "aliases": ["finger millet", "ರಾಗಿ"], "tags": [], "unit": "g"},
+  {"canonical": "pasta", "aliases": [], "tags": ["gluten"], "unit": "g"},
+  {"canonical": "oats", "aliases": [], "tags": [], "unit": "g"},
+  {"canonical": "onions", "aliases": ["onion", "ಈರುಳ್ಳಿ"], "tags": [], "unit": "g"},
+  {"canonical": "tomatoes", "aliases": ["tomato", "ಟೊಮೇಟೊ"], "tags": [], "unit": "g"},
+  {"canonical": "bitter gourd", "aliases": ["karela", "ಹಾಗಲಕಾಯಿ"], "tags": [], "unit": "g"}
+]
