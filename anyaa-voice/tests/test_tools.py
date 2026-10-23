@@ -57,14 +57,15 @@ class ToolTests(unittest.TestCase):
         self.assertEqual(items[0]["unit"], "g")
 
     def test_exact_aliases_case_and_whitespace_are_normalized(self):
-        items = self.success(tools.get_pantry(self.store, [" PALAK ", "ಪಾಲಕ್", "soppu"]))["items"]
+        items = self.success(tools.get_pantry(self.store, [" PALAK ", "ಪಾಲಕ್"]))["items"]
         self.assertEqual(len(items), 1)
         self.assertEqual(items[0]["item"], "spinach")
         self.assertEqual(items[0]["qty"], 0)
-        unknown = self.success(tools.get_pantry(self.store, ["pala"]))["items"][0]
-        self.assertEqual(unknown["item"], "pala")
-        self.assertIsNone(unknown["qty"])
-        self.assertEqual(unknown["status"], "unknown")
+        for name in ("pala", "soppu"):
+            unknown = self.success(tools.get_pantry(self.store, [name]))["items"][0]
+            self.assertEqual(unknown["item"], name)
+            self.assertIsNone(unknown["qty"])
+            self.assertEqual(unknown["status"], "unknown")
 
     def test_full_pantry_and_empty_filter(self):
         self.assertEqual(len(self.success(tools.get_pantry(self.store))["items"]), 9)

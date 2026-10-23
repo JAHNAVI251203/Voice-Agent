@@ -1,5 +1,5 @@
 [
-  {"canonical": "spinach", "aliases": ["palak", "ಪಾಲಕ್", "soppu"], "tags": [], "unit": "bunch"},
+  {"canonical": "spinach", "aliases": ["palak", "ಪಾಲಕ್"], "tags": [], "unit": "bunch"},
   {"canonical": "methi", "aliases": ["fenugreek leaves", "ಮೆಂತ್ಯ"], "tags": [], "unit": "bunch"},
   {"canonical": "paneer", "aliases": ["ಪನೀರ್"], "tags": ["dairy"], "unit": "g"},
   {"canonical": "tofu", "aliases": ["ಟೋಫು"], "tags": [], "unit": "g"},

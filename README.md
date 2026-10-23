@@ -58,7 +58,7 @@ Sarvam TTS
 - LiveKit Agents
 - Deepgram Nova-3 STT
 - Sarvam Bulbul v3 TTS
-- Mistral Chat Completions integration
+- LLM tool-calling integration (Mistral adapter currently configured)
 - Silero VAD
 - JSON state persistence
 
@@ -119,7 +119,7 @@ py -3.13 -m venv .venv
 if (-not (Test-Path .env)) { Copy-Item .env.example .env }
 ```
 
-- Set `MISTRAL_API_KEY`, `DEEPGRAM_API_KEY` and `SARVAM_API_KEY` in the ignored `.env`.
+- Set the configured LLM key (`MISTRAL_API_KEY` in the current setup), plus `DEEPGRAM_API_KEY` and `SARVAM_API_KEY` in the ignored `.env`.
 - Console microphone mode does not require LiveKit room credentials.
 
 Run tests or offline scenarios without API keys:
