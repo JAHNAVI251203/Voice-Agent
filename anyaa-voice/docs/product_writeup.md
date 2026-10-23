@@ -1,28 +1,38 @@
-# Anyaa Voice — product write-up
-
-Anyaa Voice tests whether household planning and daily kitchen execution can become short, stateful conversations. The useful outcome is a reliable change to the kitchen's shared facts: a saved meal, a corrected date, a missing ingredient, or an updated headcount.
+# Anyaa Voice — Product Write-up
 
 ## What I optimized for
 
-**Realism and product fit.** The household includes a vegetarian, a higher-protein preference, a visiting family member with lower-sugar/lower-salt preferences, and a child who prefers mild food. The planner works toward a shared meal with variants, while the cook needs brief instructions about today's meal.
-
-**Clear state mutation and safety.** Responses are backed by tools that update persisted state and history. Hard restrictions and simulated order confirmation are checked in code. Unknown quantities and ambiguous input require clarification. A handoff preserves the meal and pending issue instead of asking a person to start over.
-
-**Low complexity.** Plain Python, one JSON state store and a small set of tools are enough to test these workflows. There is no additional database, conversation framework or automatic model routing.
+- **Realism:** household preferences, pantry shortages, meal corrections and changing attendance reflect everyday kitchen decisions.
+- **Product fit:** planning produces a shared meal; cook execution turns it into short, practical instructions.
+- **Safe state mutation:** requests must produce validated meal, pantry and history updates, rather than unsupported claims of success.
+- **Concise voice UX:** keep replies brief, give one instruction or clarification at a time, and avoid reading long lists aloud.
+- **Low complexity:** plain Python, focused tools and shared JSON state keep behavior straightforward to inspect and test.
 
 ## Key decisions
 
-- **Two agents, shared state:** planning and cook execution are separate jobs with different permissions and language needs. The planner can edit meals and preview a simulated cart. The cook can report ingredient problems, apply confirmed substitutions and update attendance. Both use the same state and validation functions.
-- **Simulated Instamart:** fixed catalog, prices, stock and ETA make grocery behavior repeatable without implying access to a real partner integration. Order results are explicitly marked `simulated=true` and use `SIM-` IDs.
-- **Application-owned safeguards:** ordering requires the exact latest relevant transcript after a preview; stale or consumed confirmations fail. Dietary safeguards apply to shared ingredients and member-specific variants. Cook substitutions use the existing restriction checks.
-- **Multilingual cook experience:** short Kannada/Hindi-oriented replies, a configurable STT/TTS session locale, and clarification rather than guessing. Basic Kannada STT was tested. The native Kannada-speaking developer corrected key sample and clarification lines; full generated cook voice verification remains pending.
+- **Two agents, shared state:** planning and cooking need different permissions and conversational styles, with shared household facts and validation rules.
+- **Planner vs cook responsibilities:** the planner manages meals, corrections and grocery/cart flow. The cook handles today's meal, ingredient issues, substitutions and attendance.
+- **Simulated Instamart:** fixed catalog, stock, prices and ETA make the cart workflow repeatable. Order results are explicitly simulated and use `SIM-` identifiers.
+- **Code-enforced confirmation:** a fresh, explicit user confirmation is required after a preview. Cart changes invalidate approval, and consumed confirmations cannot place another order.
+- **Hard dietary safeguards:** restrictions apply to shared ingredients and member-specific variants. Substitutions go through the same checks before changing the meal.
+- **Multilingual cook experience:** Kannada/Hindi-oriented replies keep daily instructions accessible. Key Kannada wording was manually reviewed; uncertain input prompts clarification instead of guessed ingredients or quantities.
+- **Context-preserving handoff:** repeated misunderstanding or an unresolved issue produces a local summary with the meal, recent history and pending action for household review.
 
-## Trade-offs / what I intentionally left out
+## Trade-offs / intentionally left out
 
-Real Instamart, WhatsApp delivery, SIP transfer, production DB/auth, a nutrition database, a frontend and complex model routing do not help establish the initial hypothesis: can a short conversation safely update household work and carry context into cooking? These integrations matter after the interaction earns its place in the existing product.
+- **Real Instamart:** a simulated cart validates the interaction before introducing partner access and transaction dependencies.
+- **WhatsApp integration:** message delivery follows once the cooking instructions and update workflow are useful.
+- **SIP/telephony:** local handoff context tests what a person needs before connecting a transfer channel.
+- **DB/auth:** local persistence suits a single-household prototype; production needs identity, access control and concurrent state handling.
+- **Nutrition database:** the prototype respects stored preferences and restrictions without making clinical or nutrient-accuracy claims.
+- **Polished frontend:** the core question is whether conversation can produce useful, safe kitchen actions.
+- **Complex model routing:** one configured LLM integration keeps the execution path understandable and avoids extra operational complexity.
 
-Free LLM availability limited final live verification. Earlier live runs demonstrated English voice/tool interaction and planner/cart responses. The repeatable delivery demo uses openly labeled scripted model responses with real tool validation and state persistence; it is not evidence of a successful current Mistral voice checkout.
+## What I'd build next
 
-## What I would do next
-
-Connect Anyaa's actual backend/state, validate the grocery partner flow, and design the cook delivery channel. Add production observability and measure latency and task completion. Expand native Kannada/Hindi and noisy-kitchen testing before claiming language reliability. Add a real human/telephony handoff only if the product needs it. Meal preferences remain distinct from medical advice.
+- **Backend integration:** connect Anyaa's household records and meal lifecycle so voice works within the existing product.
+- **Real grocery flow:** connect partner catalog, cart review and purchase confirmation.
+- **Observability and latency measurement:** track tool outcomes, response delays, corrections and task completion.
+- **Stronger multilingual testing:** evaluate Kannada/Hindi understanding, wording and noisy-kitchen audio with representative speakers.
+- **Production handoff:** route the saved context to a household member or support channel, adding telephony only when needed.
+- **Real user testing:** observe household and cook tasks to refine instructions and permission boundaries around actual mistakes.

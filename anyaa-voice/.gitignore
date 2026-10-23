@@ -7,3 +7,7 @@ __pycache__/
 *.wav
 *.log
 out/
+AGENTS.md
+audio_spike.py
+docs/sdk_notes.md
+docs/demo_script.md
