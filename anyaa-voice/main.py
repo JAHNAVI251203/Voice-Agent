@@ -25,7 +25,7 @@ async def entrypoint(ctx: agents.JobContext) -> None:
     language = os.getenv("COOK_LANGUAGE", "kn") if mode == "cook" else "en"
     if mode not in {"planner", "cook"} or language not in {"kn", "hi", "en"}:
         raise ValueError("Use VOICE_AGENT_MODE=planner/cook and COOK_LANGUAGE=kn/hi/en.")
-    missing = [name for name in ("DEEPGRAM_API_KEY", "MISTRAL_API_KEY", "SARVAM_API_KEY")
+    missing = [name for name in ("DEEPGRAM_API_KEY", "OPENROUTER_API_KEY", "SARVAM_API_KEY")
                if not os.getenv(name, "").strip()]
     if missing:
         raise RuntimeError("Missing credentials in anyaa-voice/.env: " + ", ".join(missing))
@@ -33,14 +33,14 @@ async def entrypoint(ctx: agents.JobContext) -> None:
     session = AgentSession(
         stt=deepgram.STT(model="nova-3", language=language),
         llm=create_llm(),
-        tts=sarvam.TTS(model="bulbul:v3", target_language_code=f"{language}-IN", speaker="shubh"),
+        tts=sarvam.TTS(model="bulbul:v3", target_language_code=f"{language}-IN", speaker="simran"),
         vad=silero.VAD.load(),
         turn_handling=TurnHandlingOptions(
             turn_detection="vad" if mode == "cook" else inference.TurnDetector(version="v1-mini"),
             interruption={"mode": "vad"},
             # Confirmation must use the committed transcript, not a speculative reply.
             preemptive_generation={"enabled": False},
-            endpointing={"min_delay": 1.0},
+            endpointing={"min_delay": 0.5},
         ),
     )
     agent = CookAssistantAgent(StateStore(), language=language) if mode == "cook" else HouseholdPlannerAgent(StateStore())
@@ -49,6 +49,25 @@ async def entrypoint(ctx: agents.JobContext) -> None:
     def on_user_state(event) -> None:
         if event.new_state == "speaking":
             agent.user_started_speaking()
+        elif event.old_state == "speaking":
+            logger.info("Timing user_speech_end at=%.3f", event.created_at)
+
+    @session.llm.on("metrics_collected")
+    def on_llm_metrics(metric) -> None:
+        logger.info("Timing LLM_complete request=%s duration_s=%.3f first_token_s=%.3f cancelled=%s",
+                    metric.request_id, metric.duration, metric.ttft, metric.cancelled)
+
+    @session.tts.on("metrics_collected")
+    def on_tts_metrics(metric) -> None:
+        # Metrics arrive on completion; this is a reconstructed text-input start.
+        logger.info("Timing TTS request=%s input_start_estimate_at=%.3f first_audio_s=%.3f duration_s=%.3f cancelled=%s",
+                    metric.request_id, metric.timestamp - metric.duration,
+                    metric.ttfb, metric.duration, metric.cancelled)
+
+    @session.on("agent_state_changed")
+    def on_agent_state(event) -> None:
+        if event.new_state == "speaking":
+            logger.info("Timing TTS_audio_playback_start at=%.3f", event.created_at)
 
     @session.on("user_transcription_timeout")
     def on_transcription_timeout(event) -> None:
@@ -58,6 +77,11 @@ async def entrypoint(ctx: agents.JobContext) -> None:
 
     @session.on("conversation_item_added")
     def on_reply(event) -> None:
+        if getattr(event.item, "role", None) in {"user", "assistant"}:
+            logger.info("Timing turn item=%s role=%s metrics=%s", event.item.id, event.item.role,
+                        {key: value for key, value in event.item.metrics.items() if key in {
+                            "transcription_delay", "end_of_turn_delay", "llm_node_ttft",
+                            "llm_node_ttfs", "tts_node_ttfb", "e2e_latency"}})
         if getattr(event.item, "role", None) == "assistant":
             logger.info("Anyaa (interrupted=%s): %s", event.item.interrupted, event.item.text_content)
 
@@ -68,6 +92,7 @@ async def entrypoint(ctx: agents.JobContext) -> None:
 
     @session.on("function_tools_executed")
     def on_tools_executed(event: agents.FunctionToolsExecutedEvent) -> None:
+        logger.info("Timing tools_complete at=%.3f", event.created_at)
         for call, output in event.zipped():
             logger.info("Tool %s completed; is_error=%s; output=%s",
                         call.name, output.is_error, output.output)

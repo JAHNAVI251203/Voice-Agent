@@ -1,9 +1,11 @@
-"""Mistral Chat Completions configuration shared by text and voice."""
+"""Explicit free OpenRouter model shared by text and voice."""
 
-from livekit.plugins import mistralai
+from livekit.plugins import openai
 
-MODEL = "mistral-small-2603"
+MODEL = "nvidia/nemotron-3.5-lightning:free"
 
 
-def create_llm() -> mistralai.LLM:
-    return mistralai.LLM(model=MODEL, api_mode="chat_completions", temperature=0)
+def create_llm() -> openai.LLM:
+    return openai.LLM.with_openrouter(
+        model=MODEL, temperature=0, provider={"require_parameters": True},
+    )

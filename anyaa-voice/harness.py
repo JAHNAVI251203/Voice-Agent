@@ -78,8 +78,8 @@ async def self_test() -> None:
 
 async def main() -> None:
     load_dotenv(Path(__file__).with_name(".env"))
-    if not os.getenv("MISTRAL_API_KEY", "").strip():
-        raise SystemExit("Missing MISTRAL_API_KEY. Fill in anyaa-voice/.env first.")
+    if not os.getenv("OPENROUTER_API_KEY", "").strip():
+        raise SystemExit("Missing OPENROUTER_API_KEY. Fill in anyaa-voice/.env first.")
     async with create_llm() as model:
         print(await run_harness(model))
 
@@ -200,8 +200,8 @@ async def planner_main(offline: bool = False) -> None:
 
     if not offline:
         load_dotenv(Path(__file__).with_name(".env"))
-        if not os.getenv("MISTRAL_API_KEY", "").strip():
-            raise SystemExit("Missing MISTRAL_API_KEY in local .env.")
+        if not os.getenv("OPENROUTER_API_KEY", "").strip():
+            raise SystemExit("Missing OPENROUTER_API_KEY in local .env.")
     # Scripted checks get an isolated runtime: no reset or overwrite of the user's state.
     with tempfile.TemporaryDirectory(prefix="anyaa-planner-") as directory:
         store = StateStore(runtime_path=Path(directory) / "state.json")

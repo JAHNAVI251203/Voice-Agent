@@ -174,8 +174,10 @@ class CookTests(unittest.IsolatedAsyncioTestCase):
                     return callback
                 return decorator
             session.on.side_effect = register
+            session.llm.on.side_effect = lambda event: register("llm_" + event)
+            session.tts.on.side_effect = lambda event: register("tts_" + event)
             with patch.dict(os.environ, {"VOICE_AGENT_MODE": mode, "COOK_LANGUAGE": language,
-                "DEEPGRAM_API_KEY": "test", "MISTRAL_API_KEY": "test", "SARVAM_API_KEY": "test"}), \
+                "DEEPGRAM_API_KEY": "test", "OPENROUTER_API_KEY": "test", "SARVAM_API_KEY": "test"}), \
                 patch.object(main, "AgentSession", return_value=session) as session_type, \
                 patch.object(main, "StateStore", return_value=self.store), \
                 patch.object(main, "create_llm"), patch.object(main.deepgram, "STT") as stt, \
@@ -183,8 +185,27 @@ class CookTests(unittest.IsolatedAsyncioTestCase):
                 patch.object(main.inference, "TurnDetector") as semantic:
                 await main.entrypoint(SimpleNamespace(room="offline"))
                 stt.assert_called_once_with(model="nova-3", language=language)
-                tts.assert_called_once_with(model="bulbul:v3", target_language_code=f"{language}-IN", speaker="shubh")
+                tts.assert_called_once_with(model="bulbul:v3", target_language_code=f"{language}-IN", speaker="simran")
+                handling = session_type.call_args.kwargs["turn_handling"]
+                self.assertEqual(handling["endpointing"]["min_delay"], 0.5)
+                self.assertFalse(handling["preemptive_generation"]["enabled"])
                 agent = session.start.call_args.kwargs["agent"]
+                before_timing = self.store.state
+                agent.latest_user_text = "old confirmation"
+                with self.assertLogs(main.logger, level="INFO"):
+                    callbacks["user_state_changed"](SimpleNamespace(new_state="speaking"))
+                    callbacks["user_state_changed"](SimpleNamespace(old_state="speaking", new_state="listening", created_at=100.0))
+                    callbacks["agent_state_changed"](SimpleNamespace(new_state="speaking", created_at=103.0))
+                    callbacks["llm_metrics_collected"](SimpleNamespace(request_id="offline", duration=0.8, ttft=0.2, cancelled=False))
+                    callbacks["tts_metrics_collected"](SimpleNamespace(request_id="offline", timestamp=104.0, duration=1.0, ttfb=0.3, cancelled=False))
+                    callbacks["conversation_item_added"](SimpleNamespace(item=llm.ChatMessage(
+                        role="user", content=["test"], metrics={"transcription_delay": 0.4})))
+                    callbacks["conversation_item_added"](SimpleNamespace(item=llm.ChatMessage(
+                        role="assistant", content=["test"], metrics={"tts_node_ttfb": 0.3})))
+                    callbacks["function_tools_executed"](main.agents.FunctionToolsExecutedEvent(
+                        function_calls=[], function_call_outputs=[]))
+                self.assertEqual(self.store.state, before_timing)
+                self.assertEqual(agent.latest_user_text, "")
                 callbacks["user_transcription_timeout"](None)
                 if mode == "cook":
                     self.assertEqual(session_type.call_args.kwargs["turn_handling"]["turn_detection"], "vad")
